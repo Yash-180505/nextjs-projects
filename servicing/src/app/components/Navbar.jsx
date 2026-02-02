@@ -11,19 +11,15 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-black text-white px-4 py-4 flex justify-between items-center">
+    <nav className="bg-black text-white px-6 py-4 flex justify-between items-center">
       <h1 className="font-bold">QuickRide Service</h1>
 
       <div className="flex gap-4 text-sm">
         <a href="/">Home</a>
         <a href="/book-service">Book Service</a>
         <a href="/admin/dashboard">Admin</a>
-
-        {/* Logout button */}
-        <button 
-          onClick={handleLogout}
-          className="bg-orange-500 px-3 py-1 rounded-md"
-        >
+        <button onClick={handleLogout}
+          className="bg-orange-500 px-3 py-1 rounded-md">
           Logout
         </button>
       </div>
