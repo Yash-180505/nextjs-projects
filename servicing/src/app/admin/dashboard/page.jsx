@@ -1,49 +1,47 @@
-"use client"
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { supabase } from "../../lib/supabaseClient"
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "../../lib/supabaseClient";
 
 export default function AdminDashboard() {
-  const [requests, setRequests] = useState([])
-  const router = useRouter()
+  const [requests, setRequests] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
-    checkAuth()
-    fetchRequests()
-  }, [])
+    checkAuth();
+    fetchRequests();
+  }, []);
 
   async function checkAuth() {
-    const { data } = await supabase.auth.getSession()
-    if (!data.session) router.push("/admin/login")
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) router.push("/admin/login");
   }
 
   async function fetchRequests() {
     const { data } = await supabase
       .from("service_requests")
       .select("*")
-      .order("id", { ascending: false })
+      .order("id", { ascending: false });
 
-    setRequests(data || [])
+    setRequests(data || []);
   }
 
   // ⭐ OPTIMISTIC UPDATE (THIS IS THE KEY)
   async function updateStatus(id, newStatus) {
     // update UI first
-    setRequests(prev =>
-      prev.map(r =>
-        r.id === id ? { ...r, status: newStatus } : r
-      )
-    )
+    setRequests((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r)),
+    );
 
     // update DB
     const { error } = await supabase
       .from("service_requests")
       .update({ status: newStatus })
-      .eq("id", id)
+      .eq("id", id);
 
     if (error) {
-      alert("Failed to update")
-      fetchRequests()
+      alert("Failed to update");
+      fetchRequests();
     }
   }
 
@@ -64,7 +62,7 @@ export default function AdminDashboard() {
         </thead>
 
         <tbody>
-          {requests.map(r => (
+          {requests.map((r) => (
             <tr key={r.id}>
               <td className="p-3 border">{r.customer_name}</td>
               <td className="p-3 border">{r.phone}</td>
@@ -74,9 +72,7 @@ export default function AdminDashboard() {
               <td className="p-3 border">
                 <select
                   value={r.status}
-                  onChange={(e) =>
-                    updateStatus(r.id, e.target.value)
-                  }
+                  onChange={(e) => updateStatus(r.id, e.target.value)}
                   className="border px-2 py-1 rounded"
                 >
                   <option value="New">New</option>
@@ -89,5 +85,5 @@ export default function AdminDashboard() {
         </tbody>
       </table>
     </main>
-  )
+  );
 }

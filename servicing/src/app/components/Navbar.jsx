@@ -17,11 +17,8 @@ export default function Navbar() {
       <div className="flex gap-4 text-sm">
         <a href="/">Home</a>
         <a href="/book-service">Book Service</a>
-        <a href="/admin/dashboard">Admin</a>
-        <button onClick={handleLogout}
-          className="bg-orange-500 px-3 py-1 rounded-md">
-          Logout
-        </button>
+        <a href="/admin/login">Admin</a>
+       
       </div>
     </nav>
   )
