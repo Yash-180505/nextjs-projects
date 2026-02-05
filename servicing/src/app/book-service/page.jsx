@@ -5,29 +5,36 @@ import { supabase } from "../lib/supabaseClient"
 
 export default function BookService() {
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
+
   const [form, setForm] = useState({
-    customer_name:"",
-    phone:"",
-    address:"",
-    vehicle_number:"",
-    vehicle_type:"",
-    selected_service:"",
-    pickup_slot:""
+    customer_name: "",
+    phone: "",
+    address: "",
+    vehicle_number: "",
+    vehicle_type: "",
+    selected_service: "",
+    pickup_slot: ""
   })
 
   function handleChange(e) {
-    setForm({...form,[e.target.name]:e.target.value})
+    setForm({ ...form, [e.target.name]: e.target.value })
   }
 
   async function handleSubmit(e) {
     e.preventDefault()
+    if (loading) return
+
+    setLoading(true)
 
     const { error } = await supabase
       .from("service_requests")
-      .insert([form])
+      .insert([{ ...form, status: "New" }])
+
+    setLoading(false)
 
     if (!error) router.push("/success")
-    else alert("Error submitting")
+    else alert("Submission failed")
   }
 
   return (
@@ -55,8 +62,11 @@ export default function BookService() {
 
         <input type="time" className="input" name="pickup_slot" onChange={handleChange} required />
 
-        <button className="w-full bg-orange-500 text-white py-2 rounded">
-          Submit
+        <button
+          disabled={loading}
+          className="w-full bg-orange-500 text-white py-2 rounded disabled:opacity-60"
+        >
+          {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
     </main>

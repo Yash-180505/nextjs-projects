@@ -1,13 +1,14 @@
 "use client"
-import { supabase } from "../lib/supabaseClient"
 import { useRouter } from "next/navigation"
+import { supabase } from "../lib/supabaseClient"
 
 export default function Navbar() {
   const router = useRouter()
 
-  async function handleLogout() {
-    await supabase.auth.signOut()
-    router.push("/admin/login")
+  async function goToAdmin() {
+    const { data } = await supabase.auth.getSession()
+    if (data.session) router.push("/admin/dashboard")
+    else router.push("/admin/login")
   }
 
   return (
@@ -17,8 +18,7 @@ export default function Navbar() {
       <div className="flex gap-4 text-sm">
         <a href="/">Home</a>
         <a href="/book-service">Book Service</a>
-        <a href="/admin/login">Admin</a>
-       
+        <button onClick={goToAdmin}>Admin</button>
       </div>
     </nav>
   )
